@@ -37,8 +37,15 @@ class RideShareApp(Ride):
             for d in self.drivers:
                 if d.location == customer.location and d.driver_status == DriverStatus.IDLE:
                     r_obj = Ride.confirm_ride(customer.name, d.name, customer.location, destination)
+                    d.driver_status = DriverStatus.BUSY
                     self.rides.append(r_obj)
-
+    
+    def end_ride(self, driver):
+        for r in self.rides:
+            if r['driver'] == driver.name:
+                self.rides.remove(r)
+                return True
+        return False
     
 class Customer():
     def __init__(self, name: str, location: str, owner_app: RideShareApp = None):
@@ -66,6 +73,9 @@ class Driver():
     
     def update_status(self, updated_driver_status: DriverStatus):
         self.driver_status = updated_driver_status
+    
+    def end_my_ride(self, driver):
+        RideShareApp.end_ride(self.owner_app, driver)
 
 if __name__ == '__main__':
     cust1 = Customer('cust_1', 'Bellevue')
@@ -78,4 +88,6 @@ if __name__ == '__main__':
     cust1.owner_app = rideshareapp
     d1.owner_app = rideshareapp
     cust1.book_my_ride(cust1, 'Redmond')
+    print(rideshareapp.rides)
+    d1.end_my_ride(d1)
     print(rideshareapp.rides)
