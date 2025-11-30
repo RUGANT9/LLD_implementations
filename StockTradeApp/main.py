@@ -5,11 +5,16 @@ class TradeDirection(Enum):
     BUY = 'Buy'
     SELL = 'Sell'
 
+class OrderType(Enum):
+    POSITION = 'Position'
+    INTRADAY = 'Intraday'
+
 class Order:
-    def __init__(self, symbol: str, quantity: int, direction: TradeDirection):
+    def __init__(self, symbol: str, quantity: int, direction: TradeDirection, order_type: OrderType):
         self.symbol = symbol
         self.quantity = quantity
         self.direction = direction
+        self.order_type = order_type
     
 
 class Trade:
@@ -21,6 +26,7 @@ class Trade:
         return True
     
     def sell(self, q, s):
+        # dummy function that will call and interact with exchange API
         return True
 
     def execute_trade(self):
@@ -37,9 +43,9 @@ class User:
         self.app = None
 
     
-    def place_order(self, symbol: str, quantity: int, direction: TradeDirection):
+    def place_order(self, symbol: str, quantity: int, direction: TradeDirection, order_type: OrderType):
         if self.app:
-            ord_obj = Order(symbol=symbol, quantity=quantity, direction=direction)
+            ord_obj = Order(symbol=symbol, quantity=quantity, direction=direction, order_type=order_type)
             print(self.app.accept_order(ord_obj, self.id))
         else:
             print('Not Registered')
@@ -76,7 +82,7 @@ if __name__ == '__main__':
     tradeapp1 = TradeApp()
     us1 = User('user1')
     tradeapp1.add_user(us1)
-    us1.place_order('AAPL', 5, TradeDirection.BUY)
+    us1.place_order('AAPL', 5, TradeDirection.BUY, OrderType.POSITION)
     print(tradeapp1.users[us1.id])
 
             
